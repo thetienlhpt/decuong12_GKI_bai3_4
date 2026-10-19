@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn tập Giữa HKI - Tin học 12 (Premium Edition)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark-1: #0f0c29;
+            --bg-dark-2: #302b63;
+            --bg-dark-3: #24243e;
+            --accent-cyan: #00e5ff;
+            --accent-gold: #ffd700;
+            --text-main: #e0e0e0;
+            --text-muted: #9e9e9e;
+            --glass-bg: rgba(15, 15, 25, 0.7);
+            --glass-border: rgba(0, 229, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at center, var(--bg-dark-2), var(--bg-dark-1), #000000);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: -1;
+            display: flex; flex-wrap: wrap; justify-content: space-around; align-content: space-around;
+            opacity: 0.03; font-family: 'Great Vibes', cursive; font-size: 3.5rem; color: #fff;
+            transform: rotate(-25deg) scale(1.2); overflow: hidden;
+        }
+
+        .header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 30px; background: rgba(10, 10, 15, 0.6);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border); box-shadow: 0 4px 20px rgba(0,229,255,0.1);
+            position: relative; z-index: 10;
+            overflow-x: auto; 
+            gap: 20px;
+        }
+
+        .header-left, .header-center, .header-right {
+            white-space: nowrap; /* Tuyệt đối không rớt dòng */
+        }
+
+        .header-left {
+            font-family: 'Playfair Display', serif; font-weight: 700; color: var(--accent-cyan);
+            font-size: 1.2rem; letter-spacing: 1px; text-transform: uppercase;
+        }
+
+        .header-center {
+            font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.4rem;
+            color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .header-right {
+            font-family: 'Great Vibes', cursive; font-size: 2.2rem; color: var(--accent-gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .play-count-badge {
+            background: linear-gradient(135deg, var(--accent-gold), #b8860b); color: #000;
+            padding: 6px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+            letter-spacing: 1px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+            border: 1px solid rgba(255,255,255,0.5); white-space: nowrap;
+        }
+
+        .container {
+            max-width: 850px; margin: 40px auto 30px; width: 92%;
+            position: relative; z-index: 10; flex-grow: 1;
+        }
+
+        .card {
+            background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-radius: 24px; border: 1px solid var(--glass-border); padding: 40px;
+            box-shadow: var(--glass-shadow); position: relative; overflow: hidden;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card::before {
+            content: ''; position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
+            border: 1px solid rgba(0, 229, 255, 0.1); border-radius: 16px; pointer-events: none;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #login-screen { text-align: center; }
+        #login-screen h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--accent-cyan); margin-bottom: 5px; text-shadow: 0 0 15px rgba(0,229,255,0.4); }
+        #login-screen p { font-size: 1.1rem; color: var(--text-main); margin-bottom: 20px; letter-spacing: 2px; text-transform: uppercase; }
+        
+        .login-play-count {
+            display: inline-block; background: rgba(0, 229, 255, 0.1); color: var(--accent-cyan);
+            padding: 8px 25px; border-radius: 50px; font-weight: 600; margin-bottom: 25px; border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+
+        .input-group { margin: 20px 0; text-align: left; position: relative; }
+        .input-group label { display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-main); font-size: 0.95rem; }
+        .input-group input {
+            width: 100%; padding: 15px; background: rgba(0, 0, 0, 0.5); color: #fff;
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; font-size: 1rem; font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box; outline: none; transition: all 0.3s;
+        }
+        .input-group input:focus { border-color: var(--accent-cyan); box-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
+        #login-error { color: #ff5252; font-weight: 600; font-size: 0.9rem; margin-top: 15px; display: none; }
+
+        .btn {
+            padding: 15px 35px; font-size: 1.1rem; font-weight: 600; font-family: 'Montserrat', sans-serif;
+            border: none; border-radius: 50px; cursor: pointer; transition: all 0.4s ease;
+            color: #000; letter-spacing: 1px; text-transform: uppercase; position: relative; overflow: hidden;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, var(--accent-cyan), #00b0ff); width: 100%; margin-top: 15px; box-shadow: 0 8px 20px rgba(0, 229, 255, 0.3);
+        }
+        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(0, 229, 255, 0.5); }
+
+        .stats-bar {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+            font-weight: 600; background: rgba(0,0,0,0.4); padding: 12px 20px;
+            border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem;
+        }
+        .stat-item { display: flex; align-items: center; gap: 5px; }
+        .stat-correct { color: #69f0ae; }
+        .stat-wrong { color: #ff5252; }
+        .stat-badge { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; }
+
+        .question-text {
+            font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600;
+            margin-bottom: 25px; line-height: 1.6; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .question-badge {
+            display: inline-block; background: var(--accent-cyan); color: #000;
+            padding: 4px 12px; border-radius: 8px; font-size: 0.9rem; margin-bottom: 15px; font-weight: 700;
+        }
+
+        .options-grid { display: flex; flex-direction: column; gap: 15px; }
+        .option {
+            background: rgba(20, 20, 30, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px;
+            padding: 18px 20px; font-size: 1.05rem; cursor: pointer; transition: all 0.3s; color: var(--text-main);
+            line-height: 1.5;
+        }
+        .option:hover:not(.disabled) {
+            background: rgba(30, 30, 45, 0.9); border-color: var(--accent-cyan); transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0, 229, 255, 0.2);
+        }
+        .option.correct { background: rgba(0, 200, 83, 0.2) !important; border-color: #00e676 !important; color: #69f0ae; font-weight: 600; }
+        .option.wrong { background: rgba(213, 0, 0, 0.2) !important; border-color: #ff1744 !important; color: #ff5252; }
+        .option.disabled { cursor: not-allowed; opacity: 0.7; }
+
+        .bottom-actions { 
+            display: flex; margin-top: 25px; gap: 15px; align-items: stretch; min-height: 55px; 
+        }
+        
+        .explanation-box {
+            flex-grow: 1; background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px; padding: 12px 20px; display: none; text-align: left;
+            animation: fadeInUp 0.4s; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.1);
+            flex-direction: column; justify-content: center;
+        }
+        .expl-title { font-size: 0.75rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px; }
+        .expl-text { font-size: 0.95rem; color: #fff; line-height: 1.5; font-weight: 400; }
+
+        .btn-next {
+            background: #546e7a; cursor: not-allowed; display: flex; align-items: center; justify-content: center;
+            width: auto; white-space: nowrap; padding: 0 35px; opacity: 0.6; margin: 0; color: #fff;
+        }
+        .btn-next.active {
+            background: linear-gradient(135deg, var(--accent-gold), #ff9100); cursor: pointer; opacity: 1; color: #000;
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4); animation: pulse-gold 2s infinite;
+        }
+
+        .tf-container { display: flex; flex-direction: column; gap: 15px; }
+        .tf-row {
+            background: rgba(20, 20, 30, 0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+            padding: 18px 20px; transition: all 0.3s;
+        }
+        .tf-statement { font-size: 1.05rem; font-weight: 500; color: var(--text-main); margin-bottom: 12px; line-height: 1.5; }
+        .tf-actions { display: flex; gap: 10px; }
+        
+        .tf-btn {
+            flex: 1; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3);
+            font-weight: 700; color: #bdbdbd; cursor: pointer; transition: all 0.2s; font-family: 'Montserrat', sans-serif;
+        }
+        .tf-btn:hover:not(.disabled) { border-color: var(--accent-cyan); color: var(--accent-cyan); background: rgba(0,229,255,0.1); }
+        .tf-btn.selected-correct { background: rgba(0, 200, 83, 0.2); border-color: #00e676; color: #69f0ae; }
+        .tf-btn.selected-wrong { background: rgba(213, 0, 0, 0.2); border-color: #ff1744; color: #ff5252; }
+        .tf-btn.disabled { pointer-events: none; }
+        
+        .tf-expl-inline {
+            margin-top: 12px; font-size: 0.9rem; color: #ffab40; background: rgba(255, 171, 64, 0.1);
+            padding: 10px 15px; border-radius: 8px; border-left: 4px solid #ffab40; display: none; font-weight: 500;
+        }
+
+        #result-screen h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--accent-cyan); }
+        #final-score {
+            font-size: 4rem; font-weight: 700; color: var(--accent-gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); margin: 10px 0 5px;
+        }
+        .max-score-text { font-size: 1.2rem; color: var(--text-muted); font-weight: 600; margin-bottom: 20px; }
+
+        .btn-restart { background: linear-gradient(135deg, #00e5ff, #007bb5); box-shadow: 0 8px 20px rgba(0, 229, 255, 0.3); margin-top: 20px; }
+        .btn-restart:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(0, 229, 255, 0.5); }
+
+        @media (max-width: 768px) {
+            .header { padding: 15px; font-size: 0.9rem; justify-content: flex-start; }
+            .header-left { font-size: 1rem; }
+            .header-center { font-size: 1.1rem; }
+            .header-right { font-size: 1.8rem; }
+            .play-count-badge { display: none; } /* Ẩn trên mobile để tối ưu không gian header */
+            
+            .card { padding: 25px 15px; }
+            .bottom-actions { flex-direction: column; gap: 15px; }
+            .btn-next { padding: 15px; width: 100%; }
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="watermark" id="watermark-container"></div>
+
+    <div class="header">
+        <div class="header-left">Tin học 12</div>
+        <div class="header-center">Trường THPT Long Hải - Phước Tỉnh</div>
+        <div class="header-right">GV. Nguyễn Tiên</div>
+        <div class="play-count-badge" id="global-play-count">Lượt làm: 0</div>
+    </div>
+
+    <div class="container">
+        <!-- Màn hình Đăng nhập -->
+        <div class="card" id="login-screen">
+            <h2>ĐỀ CƯƠNG GIỮA HKI</h2>
+            <p>Bài 3 & Bài 4</p>
+            <div class="login-play-count" id="login-play-count">Tổng số lượt làm bài của em: 0</div>
+            
+            <div class="input-group">
+                <label for="student-name">Họ và tên học sinh</label>
+                <input type="text" id="student-name" placeholder="Nhập họ và tên..." required>
+            </div>
+            <div class="input-group">
+                <label for="student-class">Lớp</label>
+                <input type="text" id="student-class" placeholder="Ví dụ: 12A1" required>
+            </div>
+            <div id="login-error">Vui lòng nhập đầy đủ Họ tên và Lớp để bắt đầu!</div>
+            <button class="btn btn-start" onclick="startQuiz()">Bắt đầu làm bài</button>
+        </div>
+
+        <!-- Màn hình Câu hỏi -->
+        <div class="card" id="quiz-screen" style="display: none;">
+            <div class="stats-bar">
+                <span class="stat-item" style="color: var(--accent-cyan);">Tiến độ: <span class="stat-badge" id="progress-text">1/27</span></span>
+                <span class="stat-item stat-correct">Đúng: <span class="stat-badge" id="correct-count">0</span></span>
+                <span class="stat-item stat-wrong">Sai: <span class="stat-badge" id="wrong-count">0</span></span>
+            </div>
+            
+            <div class="question-badge" id="question-type-badge">TRẮC NGHIỆM NHIỀU LỰA CHỌN</div>
+            <div class="question-text" id="question-text">Nội dung câu hỏi sẽ hiện ở đây</div>
+            
+            <div class="options-grid" id="options-grid"></div>
+            <div class="tf-container" id="tf-container" style="display: none;"></div>
+            
+            <div class="bottom-actions" id="bottom-actions">
+                <div id="explanation-box" class="explanation-box">
+                    <div class="expl-title">GIẢI THÍCH</div>
+                    <div class="expl-text" id="expl-text">Nội dung giải thích.</div>
+                </div>
+                <button class="btn btn-next" id="btn-next" onclick="nextQuestion()">CÂU TIẾP THEO</button>
+            </div>
+        </div>
+
+        <!-- Màn hình Kết quả -->
+        <div class="card" id="result-screen" style="display: none; text-align: center;">
+            <h2 id="result-title">Hoàn thành bài ôn tập!</h2>
+            <div id="final-score">0</div>
+            <div class="max-score-text">/ 48 Điểm (20 câu Đơn + 28 ý Đúng/Sai)</div>
+            <p id="result-message" style="font-size: 1.15rem; margin-bottom: 30px; line-height: 1.5; font-weight: 500;"></p>
+            <button class="btn btn-restart" onclick="restartQuiz()">LÀM LẠI BÀI (ĐẢO CÂU)</button>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx50-zDmCbg8FhTJzcQe-chc0uAS52Z4qmKcTguB4SFTlBd57ZlozY0wTBgF_ZPYkk/exec";
+
+        const wmContainer = document.getElementById('watermark-container');
+        for(let i=0; i<40; i++) {
+            let span = document.createElement('span');
+            span.innerText = 'GV. Nguyễn Tiên';
+            wmContainer.appendChild(span);
+        }
+
+        const darkBackgrounds = [
+            "radial-gradient(circle at center, #1b1464, #000000)", 
+            "radial-gradient(circle at top right, #302b63, #0f0c29)",
+            "radial-gradient(circle at bottom left, #24243e, #000000)",
+            "radial-gradient(circle at center, #1a2980, #26d0ce)"
+        ];
+
+        // Ngân hàng câu hỏi Bài 3 & Bài 4 (20 MCQs) - ĐÚNG TỪNG CHỮ THEO ĐỀ CƯƠNG
+        const questionBankMC = [
+            // Bài 3
+            { q: "Thiết bị nào sau đây thường được sử dụng làm trung tâm kết nối các máy tính trong một mạng LAN nội bộ?", options: ["Modem quang.", "Repeater.", "Switch (Bộ chuyển mạch).", "Card mạng KHÔNG dây."], answer: 2, explanation: "Switch đóng vai trò trung tâm phân phối dữ liệu trong mạng LAN có dây." },
+            { q: "Thiết bị mạng nào có chức năng chính là kết nối các mạng LAN khác nhau lại với nhau và định tuyến đường đi cho dữ liệu?", options: ["Hub.", "Router (Bộ định tuyến).", "Cáp mạng UTP.", "Access Point."], answer: 1, explanation: "Router (Bộ định tuyến) có chức năng kết nối các mạng và tìm đường đi tối ưu cho dữ liệu." },
+            { q: "Chức năng cơ bản của thiết bị Modem là gì?", options: ["Điều chế và giải điều chế tín hiệu để truyền qua môi trường vật lý (như cáp quang).", "Lưu trữ dữ liệu thay cho ổ cứng máy tính.", "Phân phát địa chỉ IP cho các máy trạm.", "Ngăn chặn virus xâm nhập vào hệ thống."], answer: 0, explanation: "Modem chuyển đổi tín hiệu số của máy tính thành tín hiệu tương tự để truyền trên đường dây cáp (và ngược lại)." },
+            { q: "Để cung cấp kết nối mạng KHÔNG dây (Wi-Fi) cho thiết bị di động trong phòng, người ta thường lắp đặt thiết bị nào?", options: ["Card mạng có dây (NIC).", "Switch 24 port.", "Access Point (Điểm truy cập không dây).", "Cáp quang biển."], answer: 2, explanation: "Access Point phát sóng Wi-Fi cho các thiết bị di động truy cập." },
+            { q: "Một Router xác định đường đi tối ưu cho các gói tin xuyên qua mạng Internet dựa trên loại địa chỉ nào?", options: ["Địa chỉ MAC.", "Địa chỉ IP đích.", "Địa chỉ email của người nhận.", "Tên miền trang web."], answer: 1, explanation: "Router đọc địa chỉ IP đích trên gói tin để định tuyến nó đến đúng nơi nhận." },
+            { q: "Trên các thiết bị Router Wi-Fi dùng trong gia đình, cổng WAN thường được sử dụng để làm gì?", options: ["Cắm cáp kết nối trực tiếp với máy tính để bàn.", "Kết nối với máy in mạng nội bộ.", "Kết nối với đường truyền của nhà cung cấp dịch vụ Internet (ISP).", "Chia sẻ dữ liệu từ USB ra mạng LAN."], answer: 2, explanation: "Cổng WAN kết nối với thiết bị mạng ngoài như Modem của nhà mạng (ISP)." },
+            { q: "Nguyên nhân vật lý cốt lõi khiến cáp quang KHÔNG bị ảnh hưởng bởi hiện tượng nhiễu sóng điện từ trường là gì?", options: ["Vì cáp quang có vỏ bọc bằng chì siêu dày.", "Vì cáp quang sử dụng tín hiệu ánh sáng truyền trong lõi thủy tinh/nhựa thay vì dòng điện.", "Vì cáp quang chỉ truyền dữ liệu ở khoảng cách rất ngắn.", "Vì cáp quang tự động phát ra sóng chống nhiễu."], answer: 1, explanation: "Cáp quang truyền tín hiệu bằng ánh sáng nên hoàn toàn miễn nhiễm với nhiễu điện từ trường." },
+            { q: "Khi hai máy tính cùng đồng thời gửi dữ liệu qua một thiết bị Hub, hiện tượng gì chắc chắn sẽ xảy ra làm suy giảm hiệu suất mạng?", options: ["Máy tính sẽ bị tự động khởi động lại.", "Xung đột dữ liệu (Collision).", "Dữ liệu tự động được nén lại gấp đôi.", "Hub sẽ tự động chuyển thành Access Point."], answer: 1, explanation: "Hub gửi dữ liệu ra mọi cổng nên rất dễ gây xung đột (Collision) khi nhiều máy gửi cùng lúc." },
+            { q: "Mạng LAN của một phòng thực hành tin học thường xuyên gặp tình trạng chập chờn, tốc độ chép file rất chậm do sử dụng Hub cũ. Giải pháp tối ưu và tiết kiệm nhất để giải quyết triệt để tình trạng này là gì?", options: ["Mua thêm một Hub 24 cổng nữa và gắn song song.", "Cài lại hệ điều hành cho toàn bộ máy tính.", "Thay thế thiết bị Hub hiện tại bằng một thiết bị Switch tương ứng.", "Bắt buộc các máy tính phải sử dụng kết nối KHÔNG dây hoàn toàn."], answer: 2, explanation: "Switch xử lý dữ liệu thông minh, chỉ gửi đến đúng cổng nhận nên khắc phục hoàn toàn hiện tượng xung đột dữ liệu." },
+            { q: "Một công ty yêu cầu thiết lập đường truyền mạng nối liền hai cơ sở cách nhau 5 km với yêu cầu tốc độ truyền tải cực lớn và KHÔNG bị nhiễu do sấm sét. Môi trường truyền dẫn vật lý nào đáp ứng yêu cầu?", options: ["Cáp quang kéo trực tiếp hoặc thuê đường truyền cáp quang riêng (Leased line).", "Cáp đồng xoắn đôi (UTP Cat6).", "Một thiết bị Access Point phát sóng Wi-Fi từ cơ sở 1 sang cơ sở 2.", "Sử dụng kết nối Bluetooth giữa hai hệ thống máy chủ."], answer: 0, explanation: "Cáp quang đáp ứng được cự ly xa, tốc độ cao và miễn nhiễm với sấm sét." },
+            
+            // Bài 4
+            { q: "Giao thức IP (Internet Protocol) đảm nhận chức năng cốt lõi nào trong mạng Internet?", options: ["Định địa chỉ cho các thiết bị và điều hướng các gói tin đến đúng nơi nhận.", "Kiểm tra tính toàn vẹn của tệp tin và yêu cầu phát lại dữ liệu khi xảy ra sự cố.", "Chia nhỏ các thông điệp dữ liệu ban đầu thành các gói tin có kích thước cố định.", "Mã hóa toàn bộ dữ liệu truyền tải nhằm đảm bảo tuyệt đối bí mật của người gửi."], answer: 0, explanation: "Giao thức IP chuyên lo việc gán địa chỉ (IP address) và dẫn đường (định tuyến) gói tin đi đúng đích." },
+            { q: "Địa chỉ IPv4 truyền thống được biểu diễn tiêu chuẩn dưới dạng cấu trúc nào sau đây?", options: ["Gồm chuỗi các ký tự chữ cái và chữ số được mã hóa tự động theo chuẩn mạng.", "Gồm 6 nhóm chữ số thập lục phân viết cách nhau bằng các dấu hai chấm liền kề.", "Gồm 8 khối số nhị phân có độ dài tùy biến theo từng loại thiết bị đầu cuối.", "Gồm 4 số nguyên viết cách nhau bởi dấu chấm, mỗi số có giá trị từ 0 đến 255."], answer: 3, explanation: "IPv4 gồm 4 cụm số thập phân cách nhau bởi dấu chấm (ví dụ: 192.168.1.1)." },
+            { q: "Lý do cốt lõi dẫn đến việc cộng đồng công nghệ phải phát triển và triển khai IPv6 là gì?", options: ["Giao thức IPv4 hoàn toàn không hỗ trợ truyền tải các định dạng âm thanh số.", "Không gian địa chỉ IPv4 dần cạn kiệt trước sự bùng nổ của các thiết bị kết nối.", "Tốc độ truyền dẫn của IPv4 đã chạm ngưỡng giới hạn vật lý của dây dẫn đồng.", "Các hệ điều hành máy tính thế hệ mới không còn tương thích với cấu trúc IPv4."], answer: 1, explanation: "Do sự bùng nổ của thiết bị, dải địa chỉ IPv4 đã cạn kiệt, cần IPv6 với không gian lớn hơn." },
+            { q: "Vì sao việc truyền thông giữa các máy tính bắt buộc phải tuân theo giao thức mạng chung?", options: ["Vì các thiết bị khác nhau về phần cứng và hệ điều hành cần một chuẩn để hiểu nhau.", "Vì nếu không tuân theo chuẩn thì toàn bộ linh kiện phần cứng máy tính sẽ bị chập cháy.", "Vì các nhà mạng viễn thông sẽ tự động khóa vĩnh viễn thiết bị truy cập trái phép.", "Vì băng thông mạng sẽ bị giảm sút nghiêm trọng xuống mức bằng không ngay lập tức."], answer: 0, explanation: "Giao thức là 'ngôn ngữ chung' để các thiết bị khác biệt (Mac, Windows, Linux...) có thể giao tiếp." },
+            { q: "Mối quan hệ phối hợp giữa giao thức TCP và giao thức IP được mô tả đúng nhất là:", options: ["IP trực tiếp mã hóa dữ liệu văn bản, còn TCP giải mã hình ảnh tại nơi tiếp nhận.", "TCP chịu trách nhiệm tìm đường đi, còn IP đảm bảo các gói tin không bị mất mát.", "IP chịu trách nhiệm dẫn đường cho gói tin, còn TCP kiểm soát việc truyền tin cậy.", "TCP thiết lập địa chỉ thiết bị, còn IP kiểm tra toàn vẹn thông điệp ở đầu cuối."], answer: 2, explanation: "IP lo phần 'Dẫn đường', TCP lo phần 'Kiểm tra, Sắp xếp, Báo lỗi' để truyền tải tin cậy." },
+            { q: "Giao thức TCP đánh số thứ tự cho từng gói tin (Sequence Number) nhằm mục đích chính gì?", options: ["Giúp bên nhận ráp lại dữ liệu đúng trình tự và phát hiện kịp thời gói tin bị mất.", "Cho phép gói tin di chuyển với tốc độ nhanh gấp đôi so với các gói không số.", "Giúp các thiết bị định tuyến phân biệt được gói tin quan trọng với gói tin phụ.", "Đảm bảo rằng mọi gói tin đều đi chung một con đường duy nhất đến máy đích."], answer: 0, explanation: "Đánh số giúp máy nhận biết được gói nào đến trước/sau để ráp lại đúng trật tự." },
+            { q: "Đặc điểm nào sau đây là đúng khi nói về phương thức chuyển gói dữ liệu của giao thức IP?", options: ["Bên gửi bắt buộc phải nhận được phản hồi của bên nhận rồi mới gửi gói tin kế tiếp.", "Mọi gói tin luôn luôn phải di chuyển tuần tự nối đuôi nhau trên cùng một tuyến cáp.", "Các gói tin của cùng một thông điệp có thể đi theo các tuyến đường hoàn toàn khác nhau.", "Gói tin nào được gửi đi trước thì chắc chắn sẽ đến máy nhận trước các gói còn lại."], answer: 2, explanation: "Mạng Internet định tuyến linh hoạt, các gói tin có thể đi nhiều đường khác nhau để tránh ách tắc." },
+            { q: "Trong quá trình truyền tệp, nếu một gói tin bị thất lạc trên đường mạng, TCP sẽ xử lý ra sao?", options: ["Tự động sao chép nội dung từ gói tin liền trước để bù đắp vào phần dữ liệu thiếu.", "Lập tức hủy bỏ toàn bộ quá trình truyền tải và yêu cầu người dùng gửi lại từ đầu.", "Bên nhận không phản hồi gói đó, bên gửi hết thời gian chờ sẽ tự động gửi lại.", "Bỏ qua gói tin bị mất và tiếp tục xử lý các gói tin tiếp theo như bình thường."], answer: 2, explanation: "TCP có cơ chế chờ phản hồi (ACK), nếu quá thời gian không nhận được ACK, máy gửi sẽ tự phát lại." },
+            { q: "Khi các gói tin đến máy nhận không theo thứ tự gửi ban đầu, giao thức TCP giải quyết thế nào?", options: ["Hủy bỏ toàn bộ các gói đến sai lượt và yêu cầu bên gửi truyền lại từ gói đầu.", "Đổi tên phần mở rộng của tệp tin để phù hợp với trình tự nhận thực tế mới.", "Dùng số thứ tự của các gói để sắp xếp lại chính xác theo trật tự ban đầu.", "Tự động ghép nối dữ liệu theo đúng thứ tự đến bất kể nội dung đúng hay sai."], answer: 2, explanation: "Nhờ Sequence Number (số thứ tự) được TCP gán ban đầu, máy nhận dễ dàng ráp lại đúng trật tự." },
+            { q: "Vì sao dịch vụ truyền hình trực tiếp (Livestream) thường ưu tiên dùng UDP thay vì TCP?", options: ["UDP truyền dữ liệu liên tục với độ trễ thấp mà không mất thời gian gửi lại.", "UDP có khả năng sửa chữa mọi điểm ảnh bị nhòe trên màn hình xem trực tiếp.", "UDP hoàn toàn miễn phí cước thuê bao dữ liệu cho tất cả người xem chương trình.", "UDP bắt buộc bên nhận phải gửi xác nhận đầy đủ cho từng khung hình hiển thị."], answer: 0, explanation: "UDP bỏ qua khâu kiểm tra và gửi lại gói lỗi nên có tốc độ cực nhanh, phù hợp cho Livestream." }
+        ];
+
+        // Ngân hàng Đúng/Sai Bài 3 & Bài 4 (7 câu = 28 ý) - ĐÚNG TỪNG CHỮ
+        const questionBankTF = [
+            {
+                q: "Trường THPT X xây dựng mới một phòng thực hành Tin học với 40 máy tính để bàn. Yêu cầu đặt ra là các máy tính này phải được kết nối thành một mạng nội bộ (LAN) hoạt động ổn định để giáo viên chia sẻ bài giảng. Để thi công hệ thống mạng có dây cho phòng máy này, nhân viên kỹ thuật cần chuẩn bị các thiết bị mạng cơ bản. Hãy đánh giá tính chính xác của các nhận định sau.",
+                statements: [
+                    { text: "a) Mỗi máy tính cần phải có Card mạng (NIC) để có thể cắm dây mạng.", answer: true, expl: "Đúng. Card mạng (NIC) là linh kiện giao tiếp phần cứng bắt buộc." },
+                    { text: "b) Cần phải trang bị cho mỗi máy tính học sinh một Modem quang riêng biệt để giao tiếp với nhau trong mạng LAN.", answer: false, expl: "Sai. Modem quang chỉ cần 1 cái kết nối với nhà mạng, các máy tính LAN nối với Switch." },
+                    { text: "c) Nếu muốn tốc độ truyền dữ liệu giữa các máy tính đạt 1 Gigabit/s, thì cả cáp mạng, Switch và Card mạng đều phải hỗ trợ chuẩn Gigabit.", answer: true, expl: "Đúng. Tốc độ mạng nội bộ phụ thuộc vào thiết bị có chuẩn tốc độ thấp nhất." },
+                    { text: "d) Việc thay thế Switch 48 cổng bằng một thiết bị Hub 48 cổng sẽ giúp giảm thiểu hoàn toàn hiện tượng xung đột dữ liệu (collision).", answer: false, expl: "Sai. Hub gây ra xung đột dữ liệu, Switch mới là thiết bị giải quyết xung đột." }
+                ]
+            },
+            {
+                q: "Gia đình bạn A mới lắp đặt Internet cáp quang. Nhân viên kéo đường dây cáp quang vào phòng khách và cắm vào một thiết bị điện tử có ăng-ten. Nhân viên giải thích rằng đây là thiết bị 'tất cả trong một', vừa giải mã tín hiệu quang, vừa cấp phát địa chỉ IP và phát sóng mạng Wi-Fi. Dựa trên kiến thức về thiết bị mạng, hãy đánh giá các nhận định dưới đây.",
+                statements: [
+                    { text: "a) Sợi cáp kéo từ ngoài vào nhà là cáp quang, truyền tải dữ liệu dưới dạng tín hiệu ánh sáng.", answer: true, expl: "Đúng." },
+                    { text: "b) Chức năng phát sóng Wi-Fi cho điện thoại di động truy cập là tính năng của điểm truy cập KHÔNG dây (Access Point) tích hợp trong thiết bị.", answer: true, expl: "Đúng. Thiết bị nhà mạng thường tích hợp sẵn Access Point." },
+                    { text: "c) Nếu tivi thông minh cắm cáp mạng LAN bằng đồng (cáp UTP) vào thiết bị này, dữ liệu chạy trong cáp LAN đó vẫn là tín hiệu ánh sáng.", answer: false, expl: "Sai. Trong cáp đồng (UTP) dữ liệu truyền tải dưới dạng dòng điện." },
+                    { text: "d) Nếu tính năng Access Point trên thiết bị bị hỏng, máy tính để bàn cắm dây cáp mạng trực tiếp vào cổng LAN của thiết bị vẫn có thể truy cập Internet.", answer: true, expl: "Đúng. Mạch phát sóng hỏng không ảnh hưởng đến mạch định tuyến qua cổng cáp LAN." }
+                ]
+            },
+            {
+                q: "Một công ty có hai tầng lầu. Tầng 1 là bộ phận Kinh doanh (30 máy tính), Tầng 2 là bộ phận Kế toán (20 máy tính). Kỹ sư mạng thiết kế sơ đồ: đặt 1 Switch ở tầng 1, 1 Switch ở tầng 2, sau đó nối 2 Switch này vào 1 thiết bị Router tổng kết nối với Internet. Dựa trên thiết kế mạng này, hãy đánh giá các nhận định sau.",
+                statements: [
+                    { text: "a) Thiết bị Switch ở tầng 1 dùng để kết nối 30 máy tính của bộ phận Kinh doanh lại với nhau.", answer: true, expl: "Đúng. Switch dùng để lập mạng LAN cục bộ." },
+                    { text: "b) Router tổng trong sơ đồ có chức năng định tuyến lưu lượng giữa mạng nội bộ của công ty và mạng Internet bên ngoài.", answer: true, expl: "Đúng." },
+                    { text: "c) Nếu 2 máy tính nội bộ ở Tầng 2 muốn gửi file cho nhau, dữ liệu bắt buộc phải được gửi ra ngoài mạng Internet rồi mới truyền về lại máy đích.", answer: false, expl: "Sai. Dữ liệu chạy nội bộ qua Switch mà không cần ra mạng Internet." },
+                    { text: "d) Để tiết kiệm chi phí, công ty có thể gỡ bỏ hoàn toàn Router, chỉ cần nối trực tiếp cáp quang của nhà mạng vào Switch là có thể dùng Internet an toàn.", answer: false, expl: "Sai. Switch không có chức năng giải mã quang học hay cấp phát IP WAN của nhà mạng." }
+                ]
+            },
+            {
+                q: "Quán cafe 'Góc Nhỏ' có 50 khách hàng cùng lúc nhưng chỉ sử dụng duy nhất một Router Wi-Fi gia đình đặt ở quầy pha chế. Khách thường xuyên phàn nàn mạng Wi-Fi chập chờn, báo 'đã kết nối nhưng KHÔNG có Internet'. Hãy xác định tính đúng/sai của các giải pháp kỹ thuật sau.",
+                statements: [
+                    { text: "a) Hiện tượng rớt mạng chỉ do điện thoại của khách hàng bắt sóng kém, hoàn toàn KHÔNG liên quan đến giới hạn chịu tải của thiết bị phát.", answer: false, expl: "Sai. Nguyên nhân chính là do thiết bị phát bị quá tải kết nối." },
+                    { text: "b) Router gia đình có bộ nhớ và bộ vi xử lý hạn chế, dẫn đến quá tải khi phải cấp phát địa chỉ IP cho hàng chục thiết bị truy cập cùng lúc.", answer: true, expl: "Đúng." },
+                    { text: "c) Việc bổ sung thêm các thiết bị Access Point (AP) chuyên dụng lắp đặt phân tán sẽ giúp mở rộng vùng phủ sóng và giảm tải cho thiết bị chính.", answer: true, expl: "Đúng." },
+                    { text: "d) Giải pháp triệt để và duy nhất là gọi điện cho nhà mạng yêu cầu tăng gói cước Internet lên cao nhất mà KHÔNG cần thay đổi thiết bị Wi-Fi nào.", answer: false, expl: "Sai. Tăng gói cước không giải quyết được việc CPU/RAM của thiết bị phát bị treo." }
+                ]
+            },
+            {
+                q: "Trong giờ thực hành, bạn An tự ý đổi địa chỉ IP trên máy tính thành 192.168.1.15. Trùng hợp là máy tính của bạn Bình bên cạnh đang sử dụng đúng địa chỉ IP này.",
+                statements: [
+                    { text: "a) Địa chỉ IP là định danh duy nhất của mỗi nút mạng khi kết nối vào hệ thống.", answer: true, expl: "Đúng." },
+                    { text: "b) Chuỗi 192.168.1.15 là cấu trúc địa chỉ IPv4 tiêu chuẩn gồm bốn nhóm thập phân.", answer: true, expl: "Đúng." },
+                    { text: "c) Hệ điều hành sẽ tự cộng gộp băng thông để hai máy chia sẻ cùng địa chỉ trên.", answer: false, expl: "Sai. Gây ra hiện tượng xung đột địa chỉ IP (IP Conflict)." },
+                    { text: "d) Sự cố xung đột IP khiến ít nhất một máy không thể kết nối mạng thông suốt.", answer: true, expl: "Đúng." }
+                ]
+            },
+            {
+                q: "Gia đình lắp đặt hệ thống nhà thông minh gồm camera an ninh, bóng đèn thông minh và khóa cửa điện tử. Tất cả đều kết nối chung vào mạng Wi-Fi và được cấp địa chỉ IP.",
+                statements: [
+                    { text: "a) Các thiết bị thông minh chỉ cần sóng Wi-Fi mà không cần tuân theo giao thức mạng.", answer: false, expl: "Sai. Bất kỳ thiết bị nào nối mạng cũng phải tuân theo giao thức TCP/IP." },
+                    { text: "b) Mỗi thiết bị thông minh trong nhà đều phải có địa chỉ IP riêng để trao đổi dữ liệu.", answer: true, expl: "Đúng." },
+                    { text: "c) Bộ giao thức TCP/IP đóng vai trò nền tảng giúp thiết bị thông minh liên lạc được.", answer: true, expl: "Đúng." },
+                    { text: "d) Nhờ có giao thức chuẩn hóa, người dùng có thể điều khiển thiết bị từ khoảng cách xa.", answer: true, expl: "Đúng." }
+                ]
+            },
+            {
+                q: "Vào thời điểm công bố điểm thi tốt nghiệp, hàng triệu thí sinh cùng truy cập máy chủ tra cứu điểm khiến đường truyền mạng rơi vào trạng thái quá tải nghiêm trọng.",
+                statements: [
+                    { text: "a) Địa chỉ IP máy chủ tra cứu giúp các gói tin từ thí sinh được định tuyến tới đích.", answer: true, expl: "Đúng." },
+                    { text: "b) Giao thức TCP không có cơ chế điều khiển luồng để giảm bớt tốc độ gửi khi nghẽn mạng.", answer: false, expl: "Sai. TCP có cơ chế điều khiển luồng (Flow control) để chống tắc nghẽn." },
+                    { text: "c) Khi xảy ra nghẽn mạng, giao thức IP sẽ tự động xóa bỏ vĩnh viễn dữ liệu điểm thi.", answer: false, expl: "Sai. IP chỉ xử lý gói tin, không xóa dữ liệu trong cơ sở dữ liệu máy chủ." },
+                    { text: "d) Việc nhiều gói tin bị mất buộc TCP phải gửi lại liên tục làm tăng độ trễ mạng.", answer: true, expl: "Đúng." }
+                ]
+            }
+        ];
+
+        let currentQuestions = [];
+        let currentIdx = 0;
+        let scoreCount = 0; 
+        let wrongCountDisplay = 0; 
+        
+        let answeredMC = false;
+        let answeredTFCount = 0; 
+
+        let studentInfo = { name: '', class: '' };
+        
+        // Quản lý số lượt chơi bài 3,4 để xác định đảo câu
+        let playCount = localStorage.getItem('gvTien_playCount_bai34_v3') || 0;
+        playCount = parseInt(playCount);
+        
+        document.getElementById('global-play-count').innerText = `Lượt làm: ${playCount}`;
+        document.getElementById('login-play-count').innerText = `Tổng số lượt làm bài của em: ${playCount}`;
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        }
+
+        function playSound(type) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            
+            if (type === 'correct') {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, now); osc.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
+                gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                osc.start(now); osc.stop(now + 0.5);
+            } else {
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.2);
+                gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
+            }
+        }
+
+        function shuffleArray(array) {
+            let shuffled = array.slice();
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function startQuiz() {
+            const nameIp = document.getElementById('student-name').value.trim();
+            const classIp = document.getElementById('student-class').value.trim();
+            const errEl = document.getElementById('login-error');
+            
+            if(!nameIp || !classIp) {
+                errEl.style.display = 'block';
+                return;
+            }
+            errEl.style.display = 'none';
+            studentInfo.name = nameIp; studentInfo.class = classIp;
+
+            initAudio(); 
+            playCount++;
+            localStorage.setItem('gvTien_playCount_bai34_v3', playCount);
+            
+            document.getElementById('global-play-count').innerText = `Lượt làm: ${playCount}`;
+            document.getElementById('login-play-count').innerText = `Tổng số lượt làm bài của em: ${playCount}`;
+
+            // Logic đảo câu: Lượt 1 giữ nguyên, Lượt > 1 đảo lộn xộn
+            let mcList = questionBankMC.map(q => ({...q, type: 'mc'}));
+            let tfList = questionBankTF.map(q => ({...q, type: 'tf'}));
+
+            if (playCount > 1) {
+                // Đảo ngẫu nhiên câu hỏi (Và nếu muốn thì đảo cả đáp án trong MCQ)
+                mcList.forEach(q => {
+                    let opts = q.options.map((text, idx) => ({text, isCorrect: idx === q.answer}));
+                    opts = shuffleArray(opts);
+                    q.options = opts.map(o => o.text);
+                    q.answer = opts.findIndex(o => o.isCorrect);
+                });
+                mcList = shuffleArray(mcList);
+                tfList = shuffleArray(tfList);
+            }
+            
+            currentQuestions = [...mcList, ...tfList];
+            currentIdx = 0; scoreCount = 0; wrongCountDisplay = 0;
+
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'none';
+            document.getElementById('quiz-screen').style.display = 'block';
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const qData = currentQuestions[currentIdx];
+            
+            document.body.style.background = darkBackgrounds[Math.floor(Math.random() * darkBackgrounds.length)];
+            document.getElementById('progress-text').innerText = `${currentIdx + 1}/27`;
+            document.getElementById('correct-count').innerText = scoreCount;
+            document.getElementById('wrong-count').innerText = wrongCountDisplay;
+            
+            const badge = document.getElementById('question-type-badge');
+            const qText = document.getElementById('question-text');
+            const explBox = document.getElementById('explanation-box');
+            const btnNext = document.getElementById('btn-next');
+            const mcGrid = document.getElementById('options-grid');
+            const tfContainer = document.getElementById('tf-container');
+            
+            explBox.style.display = 'none';
+            btnNext.classList.remove('active');
+            btnNext.disabled = true;
+
+            if (qData.type === 'mc') {
+                answeredMC = false;
+                badge.innerText = "PHẦN I: TRẮC NGHIỆM NHIỀU LỰA CHỌN";
+                qText.innerText = `Câu ${currentIdx + 1}: ${qData.q}`;
+                
+                tfContainer.style.display = 'none';
+                mcGrid.style.display = 'flex';
+                mcGrid.innerHTML = '';
+
+                const prefixes = ['A', 'B', 'C', 'D'];
+                qData.options.forEach((opt, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'option';
+                    div.innerHTML = `<strong style="color: var(--accent-cyan); margin-right: 8px;">${prefixes[index]}.</strong> ${opt}`;
+                    div.onclick = () => checkAnswerMC(index, div, qData);
+                    mcGrid.appendChild(div);
+                });
+            } else {
+                answeredTFCount = 0;
+                badge.innerText = "PHẦN II: TRẮC NGHIỆM ĐÚNG/SAI";
+                qText.innerText = `Câu ${currentIdx + 1}: ${qData.q}`;
+                
+                mcGrid.style.display = 'none';
+                tfContainer.style.display = 'flex';
+                tfContainer.innerHTML = '';
+                
+                qData.statements.forEach((stmt, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'tf-row';
+                    row.innerHTML = `
+                        <div class="tf-statement">${stmt.text}</div>
+                        <div class="tf-actions">
+                            <button class="tf-btn btn-true" onclick="checkAnswerTF(${index}, true, this.parentElement)">ĐÚNG</button>
+                            <button class="tf-btn btn-false" onclick="checkAnswerTF(${index}, false, this.parentElement)">SAI</button>
+                        </div>
+                        <div class="tf-expl-inline" id="tf-expl-${index}"></div>
+                    `;
+                    tfContainer.appendChild(row);
+                });
+            }
+        }
+
+        function checkAnswerMC(selectedIndex, optElement, qData) {
+            if (answeredMC) return;
+            answeredMC = true;
+
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => opt.classList.add('disabled'));
+
+            if (selectedIndex === qData.answer) {
+                optElement.classList.add('correct');
+                playSound('correct');
+                scoreCount++;
+            } else {
+                optElement.classList.add('wrong');
+                options[qData.answer].classList.add('correct'); 
+                playSound('wrong');
+                wrongCountDisplay++;
+                
+                document.getElementById('expl-text').innerText = qData.explanation;
+                document.getElementById('explanation-box').style.display = 'flex';
+            }
+
+            document.getElementById('correct-count').innerText = scoreCount;
+            document.getElementById('wrong-count').innerText = wrongCountDisplay;
+
+            const nextBtn = document.getElementById('btn-next');
+            nextBtn.classList.add('active'); nextBtn.disabled = false;
+        }
+
+        function checkAnswerTF(stmtIndex, userChoice, actionsContainer) {
+            const btns = actionsContainer.querySelectorAll('.tf-btn');
+            if (btns[0].classList.contains('disabled')) return; 
+            
+            const qData = currentQuestions[currentIdx];
+            const stmt = qData.statements[stmtIndex];
+            const explDiv = document.getElementById(`tf-expl-${stmtIndex}`);
+            
+            btns.forEach(b => b.classList.add('disabled'));
+            const clickedBtn = userChoice ? btns[0] : btns[1];
+            
+            if (userChoice === stmt.answer) {
+                clickedBtn.classList.add('selected-correct');
+                playSound('correct');
+                scoreCount++;
+            } else {
+                clickedBtn.classList.add('selected-wrong');
+                playSound('wrong');
+                wrongCountDisplay++;
+                explDiv.innerText = "✨ Giải thích: " + stmt.expl;
+                explDiv.style.display = 'block';
+            }
+            
+            document.getElementById('correct-count').innerText = scoreCount;
+            document.getElementById('wrong-count').innerText = wrongCountDisplay;
+            
+            answeredTFCount++;
+            if (answeredTFCount === 4) {
+                const nextBtn = document.getElementById('btn-next');
+                nextBtn.classList.add('active'); nextBtn.disabled = false;
+            }
+        }
+
+        function nextQuestion() {
+            const btnNext = document.getElementById('btn-next');
+            if (btnNext.disabled) return;
+            
+            currentIdx++;
+            if (currentIdx < currentQuestions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            document.body.style.background = "radial-gradient(circle at center, #0f0c29, #302b63)";
+
+            document.getElementById('final-score').innerText = scoreCount;
+            
+            const msgEl = document.getElementById('result-message');
+            const percent = scoreCount / 48; // Max 48 điểm (20 + 28)
+
+            if (percent === 1) {
+                msgEl.innerText = "Hoàn hảo tuyệt đối! Em đã làm chủ toàn bộ kiến thức bài 3 và 4. Cô Tiên rất tự hào về em!";
+                msgEl.style.color = "#00e676";
+            } else if (percent >= 0.8) {
+                msgEl.innerText = "Thành tích rất ấn tượng! Em nắm bài rất vững, chỉ cần cẩn thận một chút ở vài ý nhỏ nhé.";
+                msgEl.style.color = "#00e5ff";
+            } else if (percent >= 0.5) {
+                msgEl.innerText = "Đạt mức Khá. Hãy xem lại những ý sai đã được giải thích để khắc sâu kiến thức hơn nhé.";
+                msgEl.style.color = "#ffd700";
+            } else {
+                msgEl.innerText = "Kết quả chưa cao. Đừng nản chí! Em hãy ôn lại đề cương và làm lại bài để cải thiện điểm số.";
+                msgEl.style.color = "#ff5252";
+            }
+
+            sendDataToSheets(studentInfo.name, studentInfo.class, scoreCount, 48, playCount);
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'block';
+            document.getElementById('student-name').value = studentInfo.name;
+            document.getElementById('student-class').value = studentInfo.class;
+        }
+
+        function sendDataToSheets(name, className, points, total, attempt) {
+            if (GOOGLE_SCRIPT_URL === "YOUR_WEB_APP_URL_HERE") return; 
+            const url = `${GOOGLE_SCRIPT_URL}?name=${encodeURIComponent(name)}&class=${encodeURIComponent(className)}&score=${points}&total=${total}&playCount=${attempt}`;
+            fetch(url, { mode: 'no-cors' })
+                .then(() => console.log("Data synced securely."))
+                .catch(err => console.error("Sync error: ", err));
+        }
+    </script>
+</body>
+</html>
